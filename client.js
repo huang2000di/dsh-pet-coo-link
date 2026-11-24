@@ -28,6 +28,11 @@ window.__ModuleLoader__.load({
       hotkeyHint: '单功能键即可，例如 F9、F10；也可用 Control+Alt+P',
       hotkeySave: '保存快捷键',
       intervalSave: '保存间隔',
+      rounds: '记忆轮数',
+      recall: '关键词回忆',
+      facts: '事实卡',
+      memorySave: '保存记忆参数',
+      memoryHint: '轮数 0–20；回忆 0–6 条；事实卡 0–20 条（0 表示关闭）',
       memory: '共享记忆',
       last: '最近一句',
       save: '保存',
@@ -49,6 +54,16 @@ window.__ModuleLoader__.load({
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ minutes }),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      return res.json()
+    }
+
+    async function setMemory(patch) {
+      const res = await fetch(`${BASE}/memory`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(patch),
       })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       return res.json()
@@ -80,6 +95,9 @@ window.__ModuleLoader__.load({
       const [busy, setBusy] = React.useState(false)
       const [hotkeyDraft, setHotkeyDraft] = React.useState('')
       const [minutesDraft, setMinutesDraft] = React.useState('')
+      const [roundsDraft, setRoundsDraft] = React.useState('')
+      const [recallDraft, setRecallDraft] = React.useState('')
+      const [factsDraft, setFactsDraft] = React.useState('')
 
       const refresh = React.useCallback(() => {
         getStatus()
@@ -87,6 +105,9 @@ window.__ModuleLoader__.load({
             setState({ status: 'ready', data })
             // 输入框跟着真实值走，避免显示上一次的草稿。
             setMinutesDraft(String(data?.intervalMinutes ?? ''))
+            setRoundsDraft(String(data?.memoryRounds ?? ''))
+            setRecallDraft(String(data?.recallLimit ?? ''))
+            setFactsDraft(String(data?.factLimit ?? ''))
             setHotkeyDraft(String(data?.hotkey ?? ''))
           })
           .catch((e) => setState({ status: 'error', error: String(e && e.message ? e.message : e) }))
@@ -189,8 +210,81 @@ window.__ModuleLoader__.load({
         React.createElement(
           'div',
           { style: hintStyle },
-          `${t.memory}：${data.memoryLines ?? 0} 轮`,
+          `${t.memory}：${data.memoryLines ?? 0} 轮已记录`,
         ),
+        React.createElement(
+          'div',
+          { style: rowStyle },
+          React.createElement('span', null, `${t.rounds}：`),
+          React.createElement('input', {
+            type: 'number',
+            min: 0,
+            max: 20,
+            step: 1,
+            value: roundsDraft,
+            disabled: busy,
+            onChange: (e) => setRoundsDraft(e.target.value),
+            style: { width: 70, padding: '4px 6px', borderRadius: 6, border: '1px solid rgba(128,128,128,.4)' },
+          }),
+          React.createElement('span', { style: hintStyle }, '轮　'),
+          React.createElement('span', null, `${t.recall}：`),
+          React.createElement('input', {
+            type: 'number',
+            min: 0,
+            max: 6,
+            step: 1,
+            value: recallDraft,
+            disabled: busy,
+            onChange: (e) => setRecallDraft(e.target.value),
+            style: { width: 60, padding: '4px 6px', borderRadius: 6, border: '1px solid rgba(128,128,128,.4)' },
+          }),
+          React.createElement('span', { style: hintStyle }, '条　'),
+          React.createElement('span', null, `${t.facts}：`),
+          React.createElement('input', {
+            type: 'number',
+            min: 0,
+            max: 20,
+            step: 1,
+            value: factsDraft,
+            disabled: busy,
+            onChange: (e) => setFactsDraft(e.target.value),
+            style: { width: 60, padding: '4px 6px', borderRadius: 6, border: '1px solid rgba(128,128,128,.4)' },
+          }),
+          React.createElement('span', { style: hintStyle }, '条'),
+          React.createElement(
+            'button',
+            {
+              type: 'button',
+              disabled: busy,
+              onClick: async () => {
+                setBusy(true)
+                try {
+                  const saved = await setMemory({
+                    rounds: Number(roundsDraft),
+                    recall: Number(recallDraft),
+                    facts: Number(factsDraft),
+                  })
+                  setState((prev) => ({
+                    ...prev,
+                    data: {
+                      ...(prev.data ?? {}),
+                      memoryRounds: saved.memoryRounds,
+                      recallLimit: saved.recallLimit,
+                      factLimit: saved.factLimit,
+                    },
+                  }))
+                } catch (e) {
+                  setState({ status: 'error', error: String(e && e.message ? e.message : e) })
+                } finally {
+                  setBusy(false)
+                }
+              },
+              style: { padding: '4px 10px', borderRadius: 6, cursor: 'pointer' },
+            },
+            t.memorySave,
+          ),
+        ),
+        React.createElement('div', { style: hintStyle }, t.memoryHint),
         React.createElement(
           'div',
           { style: rowStyle },

@@ -1,0 +1,30 @@
+{
+  "name": "dsh-pet-coo-link",
+  "version": "0.3.0",
+  "description": "蓝毛小女仆（dsh-pet）与 Coopanion 大肥鱼之间的对话通道：自动轮聊、四档记忆（短期/关键词回忆/每日摘要/事实卡）、陪玩隔离、设置页（开关/间隔/记忆轮数/快捷键）与五个工具。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": ["lib", "client.js", "cordis.patch.yml", "README.md", "LICENSE", "assets"],
+  "keywords": ["dsh", "dsh-plugin", "deepseek-harness", "desktop-pet", "cordis", "pet", "coopanion"],
+  "homepage": "https://github.com/huang2000di/dsh-pet-coo-link#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huang2000di/dsh-pet-coo-link.git"
+  },
+  "bugtracker": "https://github.com/huang2000di/dsh-pet-coo-link/issues",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": { "platform": "web", "inject": [] }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": ">=3.18.1"
+  }
+}

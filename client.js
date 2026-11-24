@@ -7,7 +7,7 @@
  *   POST /pet-coo/toggle {enabled} 开/关
  *
  * 文件是手写的 DSH client module：执行时只注册一个惰性 factory，
- * 真正副作用都在 factory 里，和 dsh-splash-animation 的写法一致。
+ * 真正的副作用都放在 factory 内部，由宿主按需物化。
  */
 window.__ModuleLoader__.load({
   id: 'dsh-pet-coo-link',

@@ -1,0 +1,12 @@
+- insert:
+    - id: pet-coo-link
+      name: dsh-pet-coo-link
+      config:
+        enabled: false
+        intervalMinutes: 2
+        memoryRounds: 6
+        watchQuietSec: 300
+        topicRotation: true
+        notifyOnToggle: true
+        petId: main
+        hotkey: F9

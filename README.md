@@ -84,3 +84,11 @@ POST /pet-coo/memory {rounds}    记忆轮数（0–20）
 daily.json   每日摘要（14 天滚动）
 facts.json   事实卡（最多 40 条）
 ```
+
+## 授权与合规（Licensing & compliance）
+
+- **本仓库全部是本项目原创代码**，没有复制或内嵌 dsh-pet、coopanion-connector-dsh 或 Coopanion 桌面端的源码与素材。
+- 运行时会**读取** Coopanion 自己写入的数据文件、调用 dsh-pet 与连接器的本地 HTTP 接口；这是与独立进程通信，不是链接或再分发它们的代码。
+- dsh-pet 为 MIT；coopanion-connector-dsh 为 **AGPL-3.0-or-later**。本项目不是它的衍生作品，也不分发它；若你要修改并分发该连接器（例如自行添加 /coopanion/tell 路由），请遵守 AGPL 的相应义务。
+- 图标 ssets/icon-180.png / icon-512.png 为几何图形生成图，不含任何第三方角色美术。
+- 名称 dsh-pet、Coopanion 仅作事实性指代，用于说明依赖关系。
